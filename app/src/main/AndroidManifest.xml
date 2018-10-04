@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.carsontrinh.cs160.represent">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,9 +21,9 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBz_8zPBPsUXLEkLYsp_0u78Vl4bcWmmac"/>
-    </application>
+            android:value="AIzaSyBz_8zPBPsUXLEkLYsp_0u78Vl4bcWmmac" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
+        <activity android:name=".CongressionalActivity"></activity>
+    </application>
 
 </manifest>
