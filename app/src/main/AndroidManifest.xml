@@ -22,4 +22,6 @@
             android:value="AIzaSyBz_8zPBPsUXLEkLYsp_0u78Vl4bcWmmac"/>
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
