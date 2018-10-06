@@ -18,6 +18,11 @@
 
     <string name="zipcode_button_label">Go</string>
     <string name="zipcode_hint">5-digit ZIP Code</string>
+    <string name="random_location_button_label">Choose Random Location</string>
+    <string name="current_location_button_label">Use Current Location</string>
+
+
+    <string name="current_location">Latitude: %1$f, Longitude: %2$f</string>
 
 
 </resources>

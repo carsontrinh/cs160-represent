@@ -3,6 +3,7 @@
     package="com.carsontrinh.cs160.represent">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBz_8zPBPsUXLEkLYsp_0u78Vl4bcWmmac" />
 
-        <activity android:name=".CongressionalActivity"></activity>
+        <activity
+            android:name=".CongressionalActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>
