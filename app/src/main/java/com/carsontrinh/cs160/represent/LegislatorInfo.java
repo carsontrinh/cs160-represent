@@ -58,6 +58,11 @@ public class LegislatorInfo {
         return id;
     }
 
+    public String getImageURL() {
+        return String.format("http://bioguide.congress.gov/bioguide/photo/%s/%s.jpg",
+                this.getLastName().charAt(0), this.getId());
+    }
+
     private String firstName;  // e.g. Kamala
     private String lastName;  // e.g. Harris
 

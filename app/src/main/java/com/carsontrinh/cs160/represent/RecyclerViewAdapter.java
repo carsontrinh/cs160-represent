@@ -47,7 +47,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.subText.append("\n" + legislator.getState());
         }
 
-        String imageUrl = String.format("http://bioguide.congress.gov/bioguide/photo/%s/%s.jpg", legislator.getLastName().charAt(0), legislator.getId());
+        String imageUrl = legislator.getImageURL();
 System.out.println("IMAGE URL:::: " + imageUrl);
         Picasso.get().load(imageUrl).placeholder(R.mipmap.ic_launcher).fit().into(holder.mediaImage);
 
@@ -62,14 +62,14 @@ System.out.println("IMAGE URL:::: " + imageUrl);
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView primaryText;
         TextView subText;
+        TextView primaryText;
         ImageView mediaImage;
 
         ViewHolder(View itemView) {
             super(itemView);
-            primaryText = itemView.findViewById(R.id.primary_text);
             subText = itemView.findViewById(R.id.sub_text);
+            primaryText = itemView.findViewById(R.id.primary_text);
             mediaImage = itemView.findViewById(R.id.media_image);
             itemView.setOnClickListener(this);
         }

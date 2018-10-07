@@ -29,6 +29,18 @@ import java.util.List;
 
 public class CongressionalActivity extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
 
+    public static final String MESSAGE_FIRST_NAME = "FIRST_NAME";
+    public static final String MESSAGE_LAST_NAME = "LAST_NAME";
+    public static final String MESSAGE_REPRESENTATIVE_TYPE = "REPRESENTATIVE_TYPE";
+    public static final String MESSAGE_PARTY = "PARTY";
+    public static final String MESSAGE_STATE = "STATE";
+    public static final String MESSAGE_DISTRICT = "DISTRICT";
+    public static final String MESSAGE_FORMATTED_ADDRESS = "FORMATTED_ADDRESS";
+    public static final String MESSAGE_URL = "URL";
+    public static final String MESSAGE_PHONE_NUMBER = "PHONE_NUMBER";
+    public static final String MESSAGE_CONTACT_FORM = "CONTACT_FORM";
+    public static final String MESSAGE_ID = "ID";
+
     private final String API_KEY_GEOCODIO = "835eab88c6bb5cc7aed43f66aeebbb388bd25d8";
 
     RecyclerViewAdapter adapter;
@@ -207,7 +219,22 @@ System.out.println("BIOGUIDEID: " + id);
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, LegislatorActivity.class);
+        LegislatorInfo legislator = adapter.getItem(position);
+        intent.putExtra(MESSAGE_FIRST_NAME, legislator.getFirstName());
+        intent.putExtra(MESSAGE_LAST_NAME, legislator.getLastName());
+        intent.putExtra(MESSAGE_REPRESENTATIVE_TYPE, legislator.getRepresentativeType());
+        intent.putExtra(MESSAGE_PARTY, legislator.getParty());
+        intent.putExtra(MESSAGE_STATE, legislator.getState());
+        intent.putExtra(MESSAGE_DISTRICT, legislator.getDistrict());
+        intent.putExtra(MESSAGE_FORMATTED_ADDRESS, legislator.getFormattedAddress());
+        intent.putExtra(MESSAGE_URL, legislator.getUrl());
+        intent.putExtra(MESSAGE_PHONE_NUMBER, legislator.getPhoneNumber());
+        intent.putExtra(MESSAGE_CONTACT_FORM, legislator.getContactForm());
+        intent.putExtra(MESSAGE_ID, legislator.getId());
+//        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        startActivity(intent);
     }
 
      /** Initializes a new Volley Request Queue. */
