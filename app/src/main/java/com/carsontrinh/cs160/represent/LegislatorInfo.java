@@ -54,6 +54,10 @@ public class LegislatorInfo {
         return capitalizeString(contactForm);
     }
 
+    public String getId() {
+        return id;
+    }
+
     private String firstName;  // e.g. Kamala
     private String lastName;  // e.g. Harris
 
@@ -68,11 +72,13 @@ public class LegislatorInfo {
     private String phoneNumber;  // e.g. 202-224-3553
     private String contactForm;  // e.g. https://www.harris.senate.gov/contact
 
+    private String id;  // e.g. H001075 (Bioguide ID)
 
     LegislatorInfo(String firstName, String lastName,
                           String representativeType, String party,
                           String state, String district, String formattedAddress,
-                          String url, String phoneNumber, String contactForm) {
+                          String url, String phoneNumber, String contactForm,
+                          String id) {
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -84,24 +90,20 @@ public class LegislatorInfo {
         this.url = url;
         this.phoneNumber = phoneNumber;
         this.contactForm = contactForm;
+        this.id = id;
+
     }
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
+
         LegislatorInfo legislator = (LegislatorInfo) object;
-        if (this.firstName.equals(legislator.firstName) && this.lastName.equals(legislator.lastName)) {
-            return true;
-        }
-        return false;
+        return this.id.equalsIgnoreCase(legislator.getId());
     }
 
     @Override
     public int hashCode() {
-        String fullName = this.firstName + this.lastName;
-        return fullName.hashCode();
+        return id.hashCode();
     }
 
     /** Returns a capitalized version. */

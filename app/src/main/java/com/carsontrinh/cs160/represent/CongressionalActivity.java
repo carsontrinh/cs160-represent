@@ -182,10 +182,14 @@ System.out.println("PHONE: " + phone);
                         String contactForm = contact.getString("contact_form");
 System.out.println("CONTACTFORM: " + contactForm);
 
+                        JSONObject references = legislator.getJSONObject("references");
+                        String id = references.getString("bioguide_id");
+System.out.println("BIOGUIDEID: " + id);
+
                         LegislatorInfo aLegislator = new LegislatorInfo(
                                 firstName, lastName, type, party,
                                 state, districtName, formattedAddress,
-                                url, phone, contactForm
+                                url, phone, contactForm, id
                         );
 
                         legislatorSet.add(aLegislator);

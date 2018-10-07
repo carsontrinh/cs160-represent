@@ -6,7 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -17,6 +20,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<LegislatorInfo> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+
 
     // data is passed into the constructor
     RecyclerViewAdapter(Context context, List<LegislatorInfo> data) {
@@ -42,6 +46,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         } else {
             holder.subText.append("\n" + legislator.getState());
         }
+
+        String imageUrl = String.format("http://bioguide.congress.gov/bioguide/photo/%s/%s.jpg", legislator.getLastName().charAt(0), legislator.getId());
+System.out.println("IMAGE URL:::: " + imageUrl);
+        Picasso.get().load(imageUrl).placeholder(R.mipmap.ic_launcher).fit().into(holder.mediaImage);
+
     }
 
     // total number of rows
@@ -55,11 +64,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView primaryText;
         TextView subText;
+        ImageView mediaImage;
 
         ViewHolder(View itemView) {
             super(itemView);
             primaryText = itemView.findViewById(R.id.primary_text);
             subText = itemView.findViewById(R.id.sub_text);
+            mediaImage = itemView.findViewById(R.id.media_image);
             itemView.setOnClickListener(this);
         }
 
