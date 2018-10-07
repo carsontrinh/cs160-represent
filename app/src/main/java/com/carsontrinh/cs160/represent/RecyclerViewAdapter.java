@@ -1,6 +1,7 @@
 package com.carsontrinh.cs160.represent;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     /* Adapted from this example: https://stackoverflow.com/a/40584425/9911641 */
 
-    private List<String> mData;
+    private List<LegislatorInfo> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    RecyclerViewAdapter(Context context, List<String> data) {
+    RecyclerViewAdapter(Context context, List<LegislatorInfo> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -33,8 +34,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String legislator = mData.get(position);
-        holder.myTextView.setText(legislator);
+        LegislatorInfo legislator = mData.get(position);
+        holder.subText.setText(legislator.getParty() + " " + legislator.getRepresentativeType());
+        holder.primaryText.setText(legislator.getFirstName() + " " + legislator.getLastName());
+        if (legislator.getRepresentativeType().equalsIgnoreCase("representative")) {
+            holder.subText.append("\n" + legislator.getFormattedAddress());
+        } else {
+            holder.subText.append("\n" + legislator.getState());
+        }
     }
 
     // total number of rows
@@ -46,11 +53,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        TextView primaryText;
+        TextView subText;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.primary_text);
+            primaryText = itemView.findViewById(R.id.primary_text);
+            subText = itemView.findViewById(R.id.sub_text);
             itemView.setOnClickListener(this);
         }
 
@@ -61,7 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     // convenience method for getting data at click position
-    String getItem(int id) {
+    LegislatorInfo getItem(int id) {
         return mData.get(id);
     }
 

@@ -22,6 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -105,30 +107,33 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
 
     private void displayAPIDataToUser(JSONObject response) {
         // data to populate the RecyclerView with
-        ArrayList<String> spicyAmigos = new ArrayList<>();
-        spicyAmigos.add("Alvin");
-        spicyAmigos.add("Andrew");
-        spicyAmigos.add("Carson");
-        spicyAmigos.add("Jackson");
-        spicyAmigos.add("Lucy");
-        spicyAmigos.add("Sarah");
-        spicyAmigos.add("Tiffany");
-
         HashSet<LegislatorInfo> legislatorSet = new HashSet<>();
         parse(response, legislatorSet);
 
+        ArrayList<LegislatorInfo> legislators = new ArrayList<>(legislatorSet);
+        Collections.sort(legislators, new Comparator<LegislatorInfo>() {
+            @Override
+            public int compare(LegislatorInfo o1, LegislatorInfo o2) {
+                String o1Type = o1.getRepresentativeType();
+                String o2Type = o2.getRepresentativeType();
+
+                if (o1Type.equalsIgnoreCase("senator") &&
+                    o2Type.compareTo(o1Type) < 1) {
+                    return -1;
+                } else if (o1Type.equalsIgnoreCase("representative") &&
+                        o2Type.compareTo(o1Type) > 1) {
+                    return 1;
+                } else {
+                    return o1.getLastName().compareTo(o2.getLastName()) >= 0 ? 1 : -1;
+                }
+            }
+        });
+
         RecyclerView recyclerView = findViewById(R.id.recycler_people);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        adapter = new RecyclerViewAdapter(this, legislatorSet);
-//        adapter.setClickListener(this);
-//        recyclerView.setAdapter(adapter);
-
-        // set up the RecyclerView
-//        RecyclerView spicyRecyclerView = findViewById(R.id.recycler_people);
-//        spicyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        adapter = new RecyclerViewAdapter(this, spicyAmigos);
-//        adapter.setClickListener(this);
-//        spicyRecyclerView.setAdapter(adapter);
+        adapter = new RecyclerViewAdapter(this, legislators);
+        adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
     }
 
     private void parse(JSONObject response, HashSet<LegislatorInfo> legislatorSet) {
@@ -143,10 +148,13 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
 
                 JSONObject location = jsonArrayResult.getJSONObject("address_components");
                 String state = location.getString("state");
+                String formattedAddress = jsonArrayResult.getString("formatted_address");
 System.out.println("STATE: " + state);
+System.out.println("FORMATTEDADDRESS: " + formattedAddress);
 
                 JSONObject fields = jsonArrayResult.getJSONObject("fields");
                 JSONArray districts = fields.getJSONArray("congressional_districts");
+
 
                 for (int j = 0; j < districts.length(); j++) {
                     JSONObject district = districts.getJSONObject(j);
@@ -175,7 +183,8 @@ System.out.println("PHONE: " + phone);
 System.out.println("CONTACTFORM: " + contactForm);
 
                         LegislatorInfo aLegislator = new LegislatorInfo(
-                                firstName, lastName, type, party, state, districtName,
+                                firstName, lastName, type, party,
+                                state, districtName, formattedAddress,
                                 url, phone, contactForm
                         );
 
