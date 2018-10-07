@@ -1,27 +1,30 @@
 package com.carsontrinh.cs160.represent;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 
-import java.util.Locale;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,11 +40,15 @@ public class MainActivity extends AppCompatActivity {
 
      // Code credit:
      // Location services: Used some code from
-     // https://github.com/googlesamples/android-play-location/tree/master/BasicLocatorSample/java
+     // https://www.youtube.com/watch?v=JlMxbTMutkA
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
 
 
     /**
@@ -66,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         findViewById(R.id.zipcode_submit_button).setEnabled(false);
-
         run();
     }
 
@@ -110,19 +116,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO: Start intent to start congressional view
-                System.out.println("<0>");
-                if (!checkPermissions()) {
-                    System.out.println("PERMISSIONS NOT ENABLED");
-                    requestPermissions();
-                } else {
-                    System.out.println("PERMISSIONS ENABLED");
-                    getLastLocation();
-                    TextView textView = (TextView) findViewById(R.id.textView2);
-                    textView.setText(getString(R.string.current_location, userLatitude, userLongitude));
-                    if (userLatitude != null && userLongitude != null) {
-                        submitIntent(TYPE_CURRENT_LOCATION, userLatitude.toString() + "," + userLongitude.toString());
-                    }
-                }
+                requestLocationUpdates();
             }
         });
 
@@ -132,22 +126,20 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: Start intent to start congressional view
             }
         });
-
-
     }
 
     /** Submits an intent to switch to {@link CongressionalActivity}. */
-    private void submitIntent(String locationType, String input) {
+    private void submitIntent(String locationType, String address) {
         Intent intent = new Intent(this, CongressionalActivity.class);
         intent.putExtra(LOCATION_TYPE_MESSAGE, locationType);
 
-        System.out.println("<2>" + locationType);
         switch (locationType) {
             case TYPE_ZIPCODE:
-                intent.putExtra(ZIPCODE_MESSAGE, input);
+                intent.putExtra(ZIPCODE_MESSAGE, address);
                 break;
             case TYPE_CURRENT_LOCATION:
-                intent.putExtra(COORDINATES_MESSAGE, input);
+                System.out.println("CURRENT_LOCATION:::: " + address);
+                intent.putExtra(COORDINATES_MESSAGE, address);
                 break;
             default:
                 return;
@@ -168,54 +160,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Provides a simple way of getting a device's location and is well suited for
-     * applications that do not require a fine-grained location and that do not need location
-     * updates. Gets the best and most recent location currently available, which may be null
-     * in rare cases when a location is not available.
-     * <p>
-     * Note: this method should be called after location permission has been granted.
-     */
-    @SuppressWarnings("MissingPermission")
-    private void getLastLocation() {
-        mFusedLocationClient.getLastLocation()
-                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+    public void requestLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED &&
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PermissionChecker.PERMISSION_GRANTED)) {
+
+
+            fusedLocationProviderClient = new FusedLocationProviderClient(this);
+            locationRequest = new LocationRequest();
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setFastestInterval(2000);
+            locationRequest.setInterval(4000);
+            locationRequest.setNumUpdates(1);
+
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                    userLongitude = locationResult.getLastLocation().getLongitude();
+                    userLatitude = locationResult.getLastLocation().getLatitude();
+
+                    TextView textView = (TextView) findViewById(R.id.textView2);
+                    textView.setText(getString(R.string.current_location, userLatitude, userLongitude));
+                    if (userLatitude != null && userLongitude != null) {
+                        submitIntent(TYPE_CURRENT_LOCATION, userLatitude.toString() + "," + userLongitude.toString());
+                    }
+                }
+            }, getMainLooper());
+
+        } else {
+            callPermissions();
+        }
+    }
+
+    public void callPermissions() {
+        Permissions.check(this/*context*/, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, "Location Access is required to use current location",
+                new Permissions.Options().setSettingsDialogTitle("Warning").setRationaleDialogTitle("Info"),
+                new PermissionHandler() {
                     @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            mLastLocation = task.getResult();
+                    public void onGranted() {
+                        requestLocationUpdates();
+                    }
+                    @Override
+                    public void onDenied(Context context, ArrayList<String> deniedPerimissions){
+                        super.onDenied(context, deniedPerimissions);
+                        callPermissions();
 
-                            userLatitude = mLastLocation.getLatitude();
-                            userLongitude = mLastLocation.getLongitude();
-
-                            System.out.printf("Latitude: %f", userLatitude);
-                            System.out.printf("Longitude: %f", userLongitude);
-                        }
                     }
                 });
-    }
-
-    /**
-     * Return the current state of the permissions needed.
-     */
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissions() {
-        Log.i(TAG, "Requesting permission");
-        // Request permission. It's possible this can be auto answered if device policy
-        // sets the permission in a given state or the user denied the permission
-        // previously and checked "Never ask again".
-        startLocationPermissionRequest();
-    }
-
-    private void startLocationPermissionRequest() {
-        ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                REQUEST_PERMISSIONS_REQUEST_CODE);
     }
 
 }

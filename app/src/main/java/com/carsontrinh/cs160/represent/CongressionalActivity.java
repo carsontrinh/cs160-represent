@@ -22,6 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class CongressionalActivity extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
 
@@ -31,8 +33,6 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
 
     /** True if the provided input is a zipcode, and false if it is an address. */
     private String locationType;
-    private String zipcode;
-    private String coordinates;
 
     RequestQueue queue;
 
@@ -51,12 +51,11 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
 
         switch (locationType) {
             case MainActivity.TYPE_ZIPCODE:
-                zipcode = intent.getStringExtra(MainActivity.ZIPCODE_MESSAGE);
-                address = zipcode;
+                address = intent.getStringExtra(MainActivity.ZIPCODE_MESSAGE);
                 break;
             case MainActivity.TYPE_CURRENT_LOCATION:
-                coordinates = intent.getStringExtra(MainActivity.COORDINATES_MESSAGE);
-                address = coordinatesToAddress(coordinates);
+                address = intent.getStringExtra(MainActivity.COORDINATES_MESSAGE);
+                System.out.println("ADDRESS:::: " + address);
                 break;
             default:
                 return;
@@ -65,34 +64,34 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
         fetchData(address);
     }
 
-    /** Converts COORDINATES - a String "<latitude>,<longitude>" to an address using reverse-geocoding. */
-    private String coordinatesToAddress(String coordinates) {
-        // TODO
-        return null;
-    }
-
     /** Gets JSon stuff from Geocodia. */
     private void fetchData(String address) {
 
         // Geocodio stuff.
         StringBuilder query = new StringBuilder();
         query.append("https://api.geocod.io/v1.3/");
-        query.append("geocode?");  // specifies if <geocode> or <reverse geocode> (for coords)
+
+        switch (locationType) {
+            case MainActivity.TYPE_ZIPCODE:
+                query.append("geocode?");
+                break;
+            case MainActivity.TYPE_CURRENT_LOCATION:
+                query.append("reverse?");
+                break;
+            default:
+                return;
+        }
+
         query.append("q="); query.append(address);  // address
         query.append("&fields="); query.append("cd");  // congressional district
         query.append("&api_key="); query.append(API_KEY_GEOCODIO);  // specifies API key
 
-        System.out.println("<100>: " + query.toString());
+        System.out.println("QUERY:::: " + query.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, query.toString(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try {
-                    JSONArray jsonArray = response.getJSONArray("results");
-                    displayAPIDataToUser();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                displayAPIDataToUser(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -104,7 +103,7 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
     }
 
 
-    private void displayAPIDataToUser() {
+    private void displayAPIDataToUser(JSONObject response) {
         // data to populate the RecyclerView with
         ArrayList<String> spicyAmigos = new ArrayList<>();
         spicyAmigos.add("Alvin");
@@ -115,12 +114,82 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
         spicyAmigos.add("Sarah");
         spicyAmigos.add("Tiffany");
 
-        // set up the RecyclerView
+        HashSet<LegislatorInfo> legislatorSet = new HashSet<>();
+        parse(response, legislatorSet);
+
         RecyclerView recyclerView = findViewById(R.id.recycler_people);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewAdapter(this, spicyAmigos);
-        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+//        adapter = new RecyclerViewAdapter(this, legislatorSet);
+//        adapter.setClickListener(this);
+//        recyclerView.setAdapter(adapter);
+
+        // set up the RecyclerView
+//        RecyclerView spicyRecyclerView = findViewById(R.id.recycler_people);
+//        spicyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        adapter = new RecyclerViewAdapter(this, spicyAmigos);
+//        adapter.setClickListener(this);
+//        spicyRecyclerView.setAdapter(adapter);
+    }
+
+    private void parse(JSONObject response, HashSet<LegislatorInfo> legislatorSet) {
+
+        try {
+
+            JSONArray jsonArrayResults = response.getJSONArray("results");
+
+            for (int i = 0; i < jsonArrayResults.length(); i++) {
+
+                JSONObject jsonArrayResult = jsonArrayResults.getJSONObject(i);
+
+                JSONObject location = jsonArrayResult.getJSONObject("address_components");
+                String state = location.getString("state");
+System.out.println("STATE: " + state);
+
+                JSONObject fields = jsonArrayResult.getJSONObject("fields");
+                JSONArray districts = fields.getJSONArray("congressional_districts");
+
+                for (int j = 0; j < districts.length(); j++) {
+                    JSONObject district = districts.getJSONObject(j);
+                    String districtName = district.getString("name");
+
+                    JSONArray legislators = district.getJSONArray("current_legislators");
+                    for (int k = 0; k < legislators.length(); k++) {
+                        JSONObject legislator = legislators.getJSONObject(k);
+                        String type = legislator.getString("type");
+System.out.println("TYPE: " + type);
+
+                        JSONObject bio = legislator.getJSONObject("bio");
+                        String lastName = bio.getString("last_name");
+System.out.println("LASTNAME: " + lastName);
+                        String firstName = bio.getString("first_name");
+System.out.println("FIRSTNAME: " + firstName);
+                        String party = bio.getString("party");
+System.out.println("PARTY: " + party);
+
+                        JSONObject contact = legislator.getJSONObject("contact");
+                        String url = contact.getString("url");
+System.out.println("URL: " + url);
+                        String phone = contact.getString("phone");
+System.out.println("PHONE: " + phone);
+                        String contactForm = contact.getString("contact_form");
+System.out.println("CONTACTFORM: " + contactForm);
+
+                        LegislatorInfo aLegislator = new LegislatorInfo(
+                                firstName, lastName, type, party, state, districtName,
+                                url, phone, contactForm
+                        );
+
+                        legislatorSet.add(aLegislator);
+                    }
+                }
+
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
