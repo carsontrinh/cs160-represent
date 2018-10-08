@@ -3,6 +3,7 @@ package com.carsontrinh.cs160.represent;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +26,7 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends BaseActivity {
 
@@ -124,6 +126,11 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // TODO: Start intent to start congressional view
+                Resources res = getResources();
+                int randomNum = ThreadLocalRandom.current().nextInt(0, 41466);
+                String zipcode = res.getStringArray(R.array.zip_codes)[randomNum];
+
+                submitIntent(TYPE_ZIPCODE, zipcode);
             }
         });
     }
@@ -180,8 +187,6 @@ public class MainActivity extends BaseActivity {
                     userLongitude = locationResult.getLastLocation().getLongitude();
                     userLatitude = locationResult.getLastLocation().getLatitude();
 
-                    TextView textView = (TextView) findViewById(R.id.textView2);
-                    textView.setText(getString(R.string.current_location, userLatitude, userLongitude));
                     if (userLatitude != null && userLongitude != null) {
                         submitIntent(TYPE_CURRENT_LOCATION, userLatitude.toString() + "," + userLongitude.toString());
                     }

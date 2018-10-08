@@ -52,6 +52,10 @@ public class LegislatorInfo {
         return formattedAddress;
     }
 
+    public String getSimpleAddress() {
+        return formattedAddress.substring(formattedAddress.indexOf(',') + 2);
+    }
+
     public String getUrl() {
         return url;
     }

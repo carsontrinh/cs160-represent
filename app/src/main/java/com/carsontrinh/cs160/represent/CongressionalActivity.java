@@ -127,10 +127,10 @@ public class CongressionalActivity extends BaseActivity implements RecyclerViewA
                 String o2Type = o2.getRepresentativeType();
 
                 if (o1Type.equalsIgnoreCase("senator") &&
-                    o2Type.compareTo(o1Type) < 1) {
+                    o2Type.compareTo(o1Type) < 0) {
                     return -1;
                 } else if (o1Type.equalsIgnoreCase("representative") &&
-                        o2Type.compareTo(o1Type) > 1) {
+                        o2Type.compareTo(o1Type) > 0) {
                     return 1;
                 } else {
                     return o1.getLastName().compareTo(o2.getLastName()) >= 0 ? 1 : -1;

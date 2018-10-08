@@ -42,16 +42,16 @@ public class LegislatorActivity extends BaseActivity {
         subText.setText(legislator.getParty() + " " + legislator.getRepresentativeType());
         primaryText.setText(legislator.getFirstName() + " " + legislator.getLastName());
         if (legislator.getRepresentativeType().equalsIgnoreCase("representative")) {
-            subText.append("\n" + legislator.getFormattedAddress());
+            subText.append("\n" + legislator.getDistrict());
+            subText.append("\n" + legislator.getSimpleAddress());
         } else {
             subText.append("\n" + legislator.getStateFormatted());
-            System.out.println("WOOOOOOOOOOW" + legislator.getStateFormatted());
         }
 
         Transformation transformation = new RoundedTransformationBuilder()
                 .borderColor(legislator.getColor())
-                .borderWidthDp(10)
-                .cornerRadiusDp(3)
+                .borderWidthDp(4)
+                .cornerRadiusDp(1)
                 .oval(false)
                 .build();
         Picasso.get().load(legislator.getImageURL()).placeholder(R.mipmap.ic_launcher).fit().transform(transformation).into(mediaImage);

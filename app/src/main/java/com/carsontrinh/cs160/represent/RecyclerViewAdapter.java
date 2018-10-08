@@ -45,7 +45,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.subText.setText(legislator.getParty() + " " + legislator.getRepresentativeType());
         holder.primaryText.setText(legislator.getFirstName() + " " + legislator.getLastName());
         if (legislator.getRepresentativeType().equalsIgnoreCase("representative")) {
-            holder.subText.append("\n" + legislator.getFormattedAddress());
+            holder.subText.append("\n" + legislator.getDistrict());
+            holder.subText.append("\n" + legislator.getSimpleAddress());
         } else {
             holder.subText.append("\n" + legislator.getStateFormatted());
         }
