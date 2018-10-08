@@ -6,15 +6,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -25,9 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 
-public class CongressionalActivity extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
+public class CongressionalActivity extends BaseActivity implements RecyclerViewAdapter.ItemClickListener {
 
     public static final String MESSAGE_FIRST_NAME = "FIRST_NAME";
     public static final String MESSAGE_LAST_NAME = "LAST_NAME";
@@ -54,6 +50,7 @@ public class CongressionalActivity extends AppCompatActivity implements Recycler
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_congressional);
+
 
         initializeVolley();
 

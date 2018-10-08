@@ -60,34 +60,38 @@
                 android:id="@+id/phone_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#00FFFFFF"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:layout_marginStart="8dp"
                 android:padding="12dp"
                 app:srcCompat="@drawable/ic_baseline_phone_24px"
                 app:layout_constraintTop_toBottomOf="@+id/media_image"
                 app:layout_constraintTop_toTopOf="@+id/contact_button"
-                app:layout_constraintEnd_toStartOf="@+id/contact_button" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:onClick="phoneOnClick" />
 
             <ImageButton
                 android:id="@+id/contact_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#00FFFFFF"
+                android:background="?android:selectableItemBackgroundBorderless"
                 android:padding="12dp"
-                app:srcCompat="@drawable/ic_baseline_contacts_24px"
+                app:srcCompat="@drawable/ic_baseline_email_24px"
                 app:layout_constraintTop_toTopOf="@+id/web_button"
-                app:layout_constraintEnd_toStartOf="@+id/web_button" />
+                app:layout_constraintStart_toEndOf="@+id/phone_button"
+                android:onClick="contactOnClick" />
 
             <ImageButton
                 android:id="@+id/web_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="#00FFFFFF"
+                android:background="?android:selectableItemBackgroundBorderless"
                 android:padding="12dp"
                 app:srcCompat="@drawable/ic_web_24px"
                 app:layout_constraintTop_toBottomOf="@+id/media_image"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/contact_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="webOnClick" />
+
 
 <!--            <Button
                 style="@style/Widget.AppCompat.Button.Borderless"

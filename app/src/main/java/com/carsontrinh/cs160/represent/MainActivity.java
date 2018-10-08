@@ -26,7 +26,7 @@ import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
 
     public static final String LOCATION_TYPE_MESSAGE = "LOCATION_TYPE";

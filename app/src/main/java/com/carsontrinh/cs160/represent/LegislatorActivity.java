@@ -1,15 +1,16 @@
 package com.carsontrinh.cs160.represent;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-public class LegislatorActivity extends AppCompatActivity {
+public class LegislatorActivity extends BaseActivity {
 
     LegislatorInfo legislator;
 
@@ -41,8 +42,29 @@ public class LegislatorActivity extends AppCompatActivity {
         if (legislator.getRepresentativeType().equalsIgnoreCase("representative")) {
             subText.append("\n" + legislator.getFormattedAddress());
         } else {
-            subText.append("\n" + legislator.getState());
+            subText.append("\n" + legislator.getStateFormatted());
+            System.out.println("WOOOOOOOOOOW" + legislator.getStateFormatted());
         }
         Picasso.get().load(legislator.getImageURL()).placeholder(R.mipmap.ic_launcher).fit().into(mediaImage);
+    }
+
+
+    public void phoneOnClick(View view) {
+        String phoneNumber = legislator.getPhoneNumber();
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
+                "tel", phoneNumber, null));
+        startActivity(phoneIntent);
+    }
+
+    public void contactOnClick(View view) {
+        Uri uri = Uri.parse(legislator.getContactForm());
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(browserIntent);
+    }
+
+    public void webOnClick(View view) {
+        Uri uri = Uri.parse(legislator.getUrl());
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(browserIntent);
     }
 }

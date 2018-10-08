@@ -1,7 +1,6 @@
 package com.carsontrinh.cs160.represent;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if (legislator.getRepresentativeType().equalsIgnoreCase("representative")) {
             holder.subText.append("\n" + legislator.getFormattedAddress());
         } else {
-            holder.subText.append("\n" + legislator.getState());
+            holder.subText.append("\n" + legislator.getStateFormatted());
         }
 
         String imageUrl = legislator.getImageURL();

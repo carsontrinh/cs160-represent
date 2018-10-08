@@ -31,6 +31,10 @@ public class LegislatorInfo {
     }
 
     public String getState() {
+        return state;
+    }
+
+    public String getStateFormatted() {
         return STATE_MAP.get(state.toUpperCase());
     }
 
@@ -43,7 +47,7 @@ public class LegislatorInfo {
     }
 
     public String getUrl() {
-        return capitalizeString(url);
+        return url;
     }
 
     public String getPhoneNumber() {
@@ -51,7 +55,7 @@ public class LegislatorInfo {
     }
 
     public String getContactForm() {
-        return capitalizeString(contactForm);
+        return contactForm;
     }
 
     public String getId() {
