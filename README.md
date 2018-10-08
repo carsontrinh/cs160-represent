@@ -1,6 +1,6 @@
 # prog02b-fa18-carsontrinh-1
 prog02b-fa18-carsontrinh-1 created by GitHub Classroom
-## by Carson Trinh
+#### Developed by Carson Trinh
 
 An Android app that locates legislators – Senators and Representatives – for some location.
 
