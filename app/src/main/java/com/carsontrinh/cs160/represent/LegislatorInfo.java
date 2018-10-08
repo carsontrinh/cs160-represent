@@ -1,11 +1,17 @@
 package com.carsontrinh.cs160.represent;
 
+import android.graphics.Color;
+
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class LegislatorInfo {
+
+    public static String D_COLOR = "#3582E9";
+    public static String R_COLOR = "#E9585B";
+    public static String I_COLOR = "#808080";
 
     public String getFirstName() {
         return capitalizeString(firstName);
@@ -23,7 +29,7 @@ public class LegislatorInfo {
         if (party.equalsIgnoreCase("Democrat")) {
             party = "Democratic";
         } else if (party.equalsIgnoreCase("Republican")) {
-            party = "Democratic";
+            party = "Republican";
         } else if  (party.equalsIgnoreCase("Independent")) {
             party = "Independent";
         }
@@ -63,8 +69,18 @@ public class LegislatorInfo {
     }
 
     public String getImageURL() {
-        return String.format("http://bioguide.congress.gov/bioguide/photo/%s/%s.jpg",
-                this.getLastName().charAt(0), this.getId());
+
+        return String.format("https://theunitedstates.io/images/congress/%s/%s.jpg\n", "original", this.getId());
+    }
+
+    public int getColor() {
+        if (party.equalsIgnoreCase("democrat") || party.equalsIgnoreCase("democratic")) {
+            return Color.parseColor(D_COLOR);
+        } else if (party.equalsIgnoreCase("republican")) {
+            return Color.parseColor(R_COLOR);
+        } else {
+            return Color.parseColor(I_COLOR);
+        }
     }
 
     private String firstName;  // e.g. Kamala

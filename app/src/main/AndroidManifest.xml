@@ -26,14 +26,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBz_8zPBPsUXLEkLYsp_0u78Vl4bcWmmac" />
 
-        <activity
-            android:name=".CongressionalActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        <activity
-            android:name=".LegislatorActivity"
-            android:parentActivityName=".CongressionalActivity">
-        </activity>
+        <activity android:name=".CongressionalActivity"></activity>
+        <activity android:name=".LegislatorActivity"></activity>
     </application>
 
 </manifest>

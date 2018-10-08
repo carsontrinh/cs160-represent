@@ -1,6 +1,8 @@
 package com.carsontrinh.cs160.represent;
 
 import android.content.Context;
+
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
@@ -46,9 +50,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.subText.append("\n" + legislator.getStateFormatted());
         }
 
+
         String imageUrl = legislator.getImageURL();
 System.out.println("IMAGE URL:::: " + imageUrl);
-        Picasso.get().load(imageUrl).placeholder(R.mipmap.ic_launcher).fit().into(holder.mediaImage);
+
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(legislator.getColor())
+                .borderWidthDp(4)
+                .cornerRadiusDp(1)
+                .oval(false)
+                .build();
+        Picasso.get().load(imageUrl).placeholder(R.mipmap.ic_launcher).fit().transform(transformation).into(holder.mediaImage);
 
     }
 

@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 public class LegislatorActivity extends BaseActivity {
 
@@ -45,7 +47,14 @@ public class LegislatorActivity extends BaseActivity {
             subText.append("\n" + legislator.getStateFormatted());
             System.out.println("WOOOOOOOOOOW" + legislator.getStateFormatted());
         }
-        Picasso.get().load(legislator.getImageURL()).placeholder(R.mipmap.ic_launcher).fit().into(mediaImage);
+
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(legislator.getColor())
+                .borderWidthDp(10)
+                .cornerRadiusDp(3)
+                .oval(false)
+                .build();
+        Picasso.get().load(legislator.getImageURL()).placeholder(R.mipmap.ic_launcher).fit().transform(transformation).into(mediaImage);
     }
 
 
